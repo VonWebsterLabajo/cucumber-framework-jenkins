@@ -135,8 +135,8 @@
        ${project.build.directory}/allure-results
       </allure.results.directory>
      </systemPropertyVariables>
-     <parallel>methods</parallel>
-	 <threadCount>3</threadCount>
+     <parallel>${parallel.mode}</parallel>
+	 <threadCount>${thread.count}</threadCount>
 	 <useUnlimitedThreads>false</useUnlimitedThreads>
      <includes>
       <include>**/*TestNgRunner.java</include>
