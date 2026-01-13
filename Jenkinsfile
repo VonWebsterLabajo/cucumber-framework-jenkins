@@ -4,6 +4,9 @@ pipeline {
  parameters {
   string(name: 'BROWSER', defaultValue: 'chrome', description: 'Browser to run tests')
   booleanParam(name: 'HEADLESS', defaultValue: true, description: 'Run browser in headless mode')
+  string(name: 'THREAD_COUNT', defaultValue: '3', description: 'TestNG thread count')
+  choice(name: 'PARALLEL_MODE', choices: ['methods', 'classes', 'tests'], description: 'Parallel execution mode')
+
  }
 
  tools {
@@ -37,7 +40,9 @@ pipeline {
      sh '''
       mvn clean test \
       -Dbrowser=${BROWSER} \
-      -Dheadless=${HEADLESS}
+      -Dheadless=${HEADLESS} \
+      -Dparallel.mode=methods \
+ 	  -Dthread.count=3
      '''
     }
    }
