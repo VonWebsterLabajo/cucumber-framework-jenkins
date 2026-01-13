@@ -22,11 +22,10 @@ pipeline {
   stage('Install Allure CLI') {
    steps {
     sh '''
-     if ! command -v allure >/dev/null 2>&1; then
+     if [ ! -d "$WORKSPACE/allure" ]; then
       wget https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.zip
       unzip -o allure-2.29.0.zip
-      sudo mv allure-2.29.0 /opt/allure
-      sudo ln -sf /opt/allure/bin/allure /usr/bin/allure
+      mv allure-2.29.0 $WORKSPACE/allure
      fi
     '''
    }
@@ -42,17 +41,17 @@ pipeline {
    }
   }
 
-  stage('Generate Allure Report') {
+   stage('Generate Allure Report') {
    steps {
     sh '''
-     allure generate target/allure-results \
+     $WORKSPACE/allure/bin/allure generate target/allure-results \
      --clean \
      --single-file \
      -o target/allure-report
     '''
    }
   }
- }
+
 
  post {
   always {
