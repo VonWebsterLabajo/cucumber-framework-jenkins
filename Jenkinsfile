@@ -33,26 +33,31 @@ pipeline {
 
   stage('Run Maven Tests') {
    steps {
-    sh '''
-     mvn clean test \
-     -Dbrowser=${BROWSER} \
-     -Dheadless=${HEADLESS}
-    '''
+    catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+     sh '''
+      mvn clean test \
+      -Dbrowser=${BROWSER} \
+      -Dheadless=${HEADLESS}
+     '''
+    }
    }
   }
 
-   stage('Generate Allure Report') {
+  stage('Generate Allure Report') {
    steps {
     sh '''
-     $WORKSPACE/allure/bin/allure generate target/allure-results \
-     --clean \
-     --single-file \
-     -o target/allure-report
+     if [ -d "target/allure-results" ]; then
+      $WORKSPACE/allure/bin/allure generate target/allure-results \
+      --clean \
+      --single-file \
+      -o target/allure-report
+     else
+      echo "No allure-results found, skipping report generation"
+     fi
     '''
    }
   }
-}
-
+ }
 
  post {
   always {
